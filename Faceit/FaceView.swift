@@ -11,24 +11,40 @@ import UIKit
 class FaceView: UIView {
     
     @IBInspectable
-    /// 缩放比率
-    var scale: CGFloat = 0.9
+    /// 缩放比率，setNeedsDisplay(): 在值发生变更时，调用draw()进行重绘
+    var scale: CGFloat = 0.9 { didSet { setNeedsDisplay() } }
     
     @IBInspectable
     /// 是否睁开眼睛
-    var eyesOpen: Bool = true
+    var eyesOpen: Bool = true { didSet { setNeedsDisplay() } }
     
     @IBInspectable
     /// 绘制线宽
-    var lineWidth: CGFloat = 5.0
+    var lineWidth: CGFloat = 5.0 { didSet { setNeedsDisplay() } }
     
     @IBInspectable
     /// 绘制颜色
-    var color: UIColor = UIColor.blue
+    var color: UIColor = UIColor.blue { didSet { setNeedsDisplay() } }
     
     @IBInspectable
     /// 嘴巴曲率：1.0:笑满，-1.0:苦脸满
-    var mouthCurvature: Double = -0.5
+    var mouthCurvature: Double = -0.5 { didSet { setNeedsDisplay() } }
+    
+    /// 改变缩放比率
+    /// - Parameter pinchRecognizer: 捏合手势识别器
+    @objc // @objc: 用于解决在 ViewController 中采用 #selector 关联手势识别器时报错的问题
+    func changeScale(byReactingTo pinchRecognizer: UIPinchGestureRecognizer) {
+        switch pinchRecognizer.state {
+        case .changed: fallthrough
+        case .ended:
+            // print("changeScale is called: \(pinchRecognizer.scale)")
+            scale *= pinchRecognizer.scale
+            // 重置[识别器]的缩放比率，从而每次可以获得增量
+            pinchRecognizer.scale = 1
+        default:
+            break
+        }
+    }
     
     // 头骨半径
     private var skullRadius: CGFloat {

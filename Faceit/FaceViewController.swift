@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class FaceViewController: UIViewController {
     
     /// 面部表情视图引用。
     /// 注意事项：引用时尽量保持 faceView?.eyes 的方式，防止初始化加载时未关联导致程序崩溃
